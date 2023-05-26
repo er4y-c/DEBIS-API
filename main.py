@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from routes.auth_routes import router as auth_routes
+from routes.teacher_routes import router as teacher_routes
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.models import OAuthFlows
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import RedirectResponse
+
 app = FastAPI()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
@@ -14,9 +16,9 @@ def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
-        title="Your API Title",
+        title="DEBIS API",
         version="1.0.0",
-        description="Your API Description",
+        description="A Restful API for DEU OBS",
         routes=app.routes,
     )
     openapi_schema["components"]["securitySchemes"] = {
@@ -61,3 +63,4 @@ async def get_openapi_json():
     return app.openapi()
 
 app.include_router(router=auth_routes, prefix="/auth", tags=["auth"])
+app.include_router(router=teacher_routes, prefix="/teacher", tags=["teacher"])
