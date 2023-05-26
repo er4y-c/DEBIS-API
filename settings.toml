@@ -1,0 +1,2 @@
+[default]
+POSTGRE_SQL_URL = "postgresql://postgres:root@localhost/debis"
