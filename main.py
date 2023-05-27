@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from routes.auth_routes import router as auth_routes
 from routes.teacher_routes import router as teacher_routes
+from routes.student_routes import router as student_routes
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.models import OAuthFlows
@@ -64,3 +65,4 @@ async def get_openapi_json():
 
 app.include_router(router=auth_routes, prefix="/auth", tags=["auth"])
 app.include_router(router=teacher_routes, prefix="/teacher", tags=["teacher"])
+app.include_router(router=student_routes, prefix="/student", tags=["student"])

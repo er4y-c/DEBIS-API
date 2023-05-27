@@ -38,3 +38,25 @@ class SignUpStudentModel(BaseModel):
                 "student_no": "2020280128"
             }
         }
+
+class SignUpTeacherModel(BaseModel):
+    id: Optional[int] 
+    email: str
+    password: str
+    first_name: str
+    last_name: str
+    teacher_department: Optional[str]
+    teacher_major: Optional[str]
+
+    class Config:
+        orm_mode = True
+        schema_extra = {
+            "example": {
+                "email": "elifmertturk@school.edu.tr",
+                "password": "123456",
+                "first_name": "Elif",
+                "last_name": "Merttürk",
+                "teacher_department": "Fen Fakültesi",
+                "teacher_major": "Bilgisayar Bilimleri",
+            }
+        }

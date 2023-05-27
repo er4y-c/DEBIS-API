@@ -69,6 +69,10 @@ class StudentLesson(Base):
     id = Column(Integer, primary_key=True, index=True)
     student_id = Column(Integer, ForeignKey("students.id"))
     lesson_id = Column(Integer, ForeignKey("lessons.id"))
+    ara_sinav = Column(Integer)
+    final = Column(Integer)
+    diger_not = Column(Integer)
+
     def __repr__(self):
         return f"User lesson {self.id}"
     
