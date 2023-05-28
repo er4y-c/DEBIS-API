@@ -7,8 +7,9 @@ class Student(Base):
     __tablename__ = "students"
 
     id = Column(Integer, primary_key=True, index=True)
-    first_name = Column(String)
-    last_name = Column(String)
+    first_name = Column(String(50))
+    last_name = Column(String(50))
+    full_name = Column(String(255))
     email = Column(String(80), unique=True, index=True)
     password = Column(Text)
     student_no = Column(String(10))
@@ -26,6 +27,7 @@ class Teacher(Base):
     id = Column(Integer, primary_key=True, index=True)
     first_name = Column(String(50))
     last_name = Column(String(50))
+    full_name = Column(String(255))
     email = Column(String(80), unique=True, index=True)
     password = Column(Text)
     teacher_department = Column(String(80))
