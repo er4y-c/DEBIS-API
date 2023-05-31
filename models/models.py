@@ -73,7 +73,7 @@ class StudentLesson(Base):
     lesson_id = Column(Integer, ForeignKey("lessons.id"))
     ara_sinav = Column(Integer)
     final = Column(Integer)
-    diger_not = Column(Integer)
+    diger_sinav = Column(Integer)
 
     def __repr__(self):
         return f"User lesson {self.id}"

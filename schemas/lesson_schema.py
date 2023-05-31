@@ -19,3 +19,17 @@ class AddLessonModel(BaseModel):
                "lesson_department": "Computer Science"
             }
         }
+
+class AddStudentLessonModel(BaseModel):
+    id: Optional[int]
+    lesson_code: str
+    student_list: list[str]
+
+    class Config:
+        orm_mode = True
+        schema_extra = {
+            "example": {
+               "lesson_code": "CS-101",
+               "student_list": ["2020280128", "2020280129"], 
+            }
+        }
