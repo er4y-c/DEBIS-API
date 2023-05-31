@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from controller.auth_controller import get_current_user
-from schemas.lesson_schema import AddLessonModel, AddStudentLessonModel
-from models.models import Lesson, Teacher, Student, StudentLesson, TeacherLesson
+from schemas.lesson_schema import AddLessonModel, AddStudentLessonModel, AddNoteModel
+from models.models import Lesson, Teacher
 from db.database import Session, engine
 from crud.lesson import get_lesson_by_code
-from controller.lesson_controller import create_id_list, assign_lesson
+from controller.lesson_controller import create_id_list, assign_lesson_controller, add_notes_controller
 
 router = APIRouter()
 session = Session(bind=engine)
@@ -72,17 +72,41 @@ async def assign_lesson_to_student(lesson: AddStudentLessonModel, user: str = De
             status_code=404,
             detail="Lesson is not found"
         )
+    try:
+        student_id_list = create_id_list(lesson.student_list)
 
-    student_id_list = create_id_list(lesson.student_list)
+        new_student_lesson = assign_lesson_controller(student_id_list, find_lesson.id)
+        session.add(new_student_lesson)
+        session.commit()
 
-    assign_lesson(student_id_list, find_lesson.id)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Students added successfully"
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"message": f"An error occurred. Error details: {str(e)}"},
+        )
 
-    return JSONResponse(
-        status_code=200,
-        content={
-            "message": "Students added succesfully"
-        }
-    )
+@router.put("/add_note")
+async def add_note(note_data: AddNoteModel, user: str = Depends(get_current_user)):
+    try:
+        add_notes_controller(note_data)
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Notes added successfully"
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"message": f"An error occurred. Error details: {str(e)}"},
+        )
 
 @router.post("/assign-teacher")
 async def assign_lesson_to_teacher(lesson: AddLessonModel, user: str = Depends(get_current_user)):
