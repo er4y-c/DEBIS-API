@@ -1,18 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+from typing import Union
 from controller.auth_controller import get_current_user
+from schemas.auth_schema import SignUpStudentModel, SignUpTeacherModel
 from schemas.lesson_schema import AddLessonModel, AddStudentLessonModel, AddNoteModel
 from models.models import Lesson, Teacher, TeacherLesson
 from db.database import Session, engine
-from crud.lesson import get_lesson_by_code, get_lesson_by_id, add_lesson, add_teacher_lesson
+from crud.lesson import get_lesson_by_code, get_lesson_by_id, add_lesson, add_teacher_lesson, get_student_all_lesson
 from controller.lesson_controller import create_id_list, assign_lesson_controller, add_notes_controller, assign_teacher_controller
 
 router = APIRouter()
 session = Session(bind=engine)
 
 @router.get("/")
-async def get_lessons(user: str = Depends(get_current_user)):
+async def get_lessons(user = Depends(get_current_user)):
     try:
         lessons = get_lessons()
         return JSONResponse(
@@ -30,7 +32,7 @@ async def get_lessons(user: str = Depends(get_current_user)):
         )
     
 @router.get("/{lesson_id}")
-async def get_lesson(lesson_id: int, user: str = Depends(get_current_user)):
+async def get_lesson(lesson_id: int, user = Depends(get_current_user)):
     try:
         lesson = get_lesson_by_id(lesson_id)
         return JSONResponse(
@@ -47,8 +49,26 @@ async def get_lesson(lesson_id: int, user: str = Depends(get_current_user)):
             }
         )
     
+@router.get("/student_all_lesson/{student_id}")
+async def get_student_lessons(student_id: int, user = Depends(get_current_user)):
+    try:
+        lessons = get_student_all_lesson(student_id)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "course_list": jsonable_encoder(lessons)
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "message": f"An error occurred. Error details: {str(e)}"
+            }
+        )
+    
 @router.post("/create")
-async def create_lesson(lesson: AddLessonModel, user: str = Depends(get_current_user)):
+async def create_lesson(lesson: AddLessonModel, user = Depends(get_current_user)):
     exist_lesson = session.query(Lesson).filter(Lesson.lesson_code==lesson.lesson_code or Lesson.lesson_name==lesson.lesson_name).first()
     
     if exist_lesson:
@@ -95,7 +115,7 @@ async def create_lesson(lesson: AddLessonModel, user: str = Depends(get_current_
         )
 
 @router.post("/assign-student")
-async def assign_lesson_to_student(lesson: AddStudentLessonModel, user: str = Depends(get_current_user)):
+async def assign_lesson_to_student(lesson: AddStudentLessonModel, user = Depends(get_current_user)):
     find_lesson = get_lesson_by_code(lesson.lesson_code)
     if not find_lesson:
         raise HTTPException(
@@ -122,7 +142,7 @@ async def assign_lesson_to_student(lesson: AddStudentLessonModel, user: str = De
         )
 
 @router.put("/add_note")
-async def add_note(note_data: AddNoteModel, user: str = Depends(get_current_user)):
+async def add_note(note_data: AddNoteModel, user = Depends(get_current_user)):
     try:
         add_notes_controller(note_data)
 
@@ -139,7 +159,7 @@ async def add_note(note_data: AddNoteModel, user: str = Depends(get_current_user
         )
 
 @router.put("/assign-teacher")
-async def assign_lesson_to_teacher(lesson_code: str, teacher_id: int, user: str = Depends(get_current_user)):
+async def assign_lesson_to_teacher(lesson_code: str, teacher_id: int, user = Depends(get_current_user)):
     try:
         temp = assign_teacher_controller(lesson_code, teacher_id)
         if temp:

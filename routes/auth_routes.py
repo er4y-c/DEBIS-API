@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
-from fastapi.security import OAuth2PasswordBearer
 from controller.auth_controller import authenticate_user, create_access_token, get_current_user
 from models.models import Student, Teacher
 from schemas.auth_schema import SignUpStudentModel, LoginModel, SignUpTeacherModel
@@ -9,9 +8,9 @@ from db.database import Session, engine
 router = APIRouter()
 session = Session(bind=engine)
 
-@router.get("/")
-async def hello(token: str = Depends(get_current_user)):
-    return {"message":"hello world"}
+@router.get("/me")
+async def hello(user = Depends(get_current_user)):
+    return {"message":user}
 
 @router.post("/login")
 async def login(user: LoginModel):

@@ -33,3 +33,7 @@ def update_lessons_teacher(current_lesson, teacher_id):
     session.execute(query)
     session.execute(query2)
     session.commit()
+
+def get_student_all_lesson(student_id):
+    lessons = session.query(StudentLesson).filter(StudentLesson.student_id == student_id).all()
+    return lessons
