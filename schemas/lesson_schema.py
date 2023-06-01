@@ -52,3 +52,17 @@ class AddNoteModel(BaseModel):
                "diger_sinav": [0, 100],
             }
         }
+
+class AssignTeacherModel(BaseModel):
+    id: Optional[int]
+    lesson_code: str
+    full_name: str
+
+    class Config:
+        orm_mode = True
+        schema_extra = {
+            "example": {
+               "lesson_code": "CS-101",
+               "teacher_id": 2, 
+            }
+        }

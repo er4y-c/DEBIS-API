@@ -1,7 +1,7 @@
 from crud.user import get_student_by_no
-from crud.lesson import get_lesson_by_code, update_notes
+from crud.lesson import get_lesson_by_code, update_notes, update_lessons_teacher
 from db.database import Session, engine
-from models.models import StudentLesson, Lesson
+from models.models import StudentLesson, TeacherLesson, Lesson
 
 session = Session(bind=engine)
 
@@ -37,3 +37,12 @@ def add_notes_controller(note_data):
             final = note_data.final[i],
             diger_sinav = note_data.diger_sinav[i],
         )
+
+def assign_teacher_controller(lesson_code, teacher_id):
+    try:
+        current_lesson = get_lesson_by_code(lesson_code)
+        update_lessons_teacher(current_lesson, teacher_id)
+
+        return True
+    except Exception as e:
+        return None

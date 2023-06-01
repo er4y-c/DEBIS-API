@@ -1,5 +1,5 @@
 from db.database import Session, engine
-from models.models import Lesson, StudentLesson
+from models.models import Lesson, StudentLesson, TeacherLesson
 from sqlalchemy import update
 
 session = Session(bind=engine)
@@ -17,4 +17,19 @@ def update_notes(student_id, lesson_id, ara_sinav, final, diger_sinav):
     
     temp = update(StudentLesson).where(StudentLesson.student_id == student_id and StudentLesson.lesson_id == lesson_id).values(ara_sinav=ara_sinav, final=final, diger_sinav=diger_sinav)
     session.execute(temp)
+    session.commit()
+
+def add_lesson(lesson):
+    session.add(lesson)
+    session.commit()
+
+def add_teacher_lesson(lesson_teacher):
+    session.add(lesson_teacher)
+    session.commit()
+
+def update_lessons_teacher(current_lesson, teacher_id):
+    query = update(Lesson).where(Lesson.id == current_lesson.id).values(teacher_id=teacher_id)
+    query2 = update(TeacherLesson).where(TeacherLesson.lesson_id == current_lesson.id).values(teacher_id=teacher_id)
+    session.execute(query)
+    session.execute(query2)
     session.commit()

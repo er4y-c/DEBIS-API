@@ -3,10 +3,10 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from controller.auth_controller import get_current_user
 from schemas.lesson_schema import AddLessonModel, AddStudentLessonModel, AddNoteModel
-from models.models import Lesson, Teacher
+from models.models import Lesson, Teacher, TeacherLesson
 from db.database import Session, engine
-from crud.lesson import get_lesson_by_code, get_lesson_by_id
-from controller.lesson_controller import create_id_list, assign_lesson_controller, add_notes_controller
+from crud.lesson import get_lesson_by_code, get_lesson_by_id, add_lesson, add_teacher_lesson
+from controller.lesson_controller import create_id_list, assign_lesson_controller, add_notes_controller, assign_teacher_controller
 
 router = APIRouter()
 session = Session(bind=engine)
@@ -56,16 +56,8 @@ async def create_lesson(lesson: AddLessonModel, user: str = Depends(get_current_
             status_code=409,
             detail="This course already exist"
         )
-    
-    try:
-        teacher = session.query(Teacher).filter(user.email == Teacher.email).first()
-    except Exception as e:
-         return JSONResponse(
-            status_code=500,
-            content= {
-                "message": f"Error detail: {str(e)}"
-            }
-        )
+
+    teacher = session.query(Teacher).filter(user.email == Teacher.email).first()
     if not teacher:
         return JSONResponse(
             status_code=401,
@@ -81,9 +73,14 @@ async def create_lesson(lesson: AddLessonModel, user: str = Depends(get_current_
             lesson_credit = lesson.lesson_credit,
             lesson_department = lesson.lesson_department
         )
+        add_lesson(new_lesson)
 
-        session.add(new_lesson)
-        session.commit()
+        current_lesson = get_lesson_by_code(lesson.lesson_code)
+        new_lesson_teacher = TeacherLesson(
+            lesson_id = current_lesson.id,
+            teacher_id = teacher.id
+        )
+        add_teacher_lesson(new_lesson_teacher)
 
         return JSONResponse(
                 status_code=200,
@@ -141,6 +138,23 @@ async def add_note(note_data: AddNoteModel, user: str = Depends(get_current_user
             content={"message": f"An error occurred. Error details: {str(e)}"},
         )
 
-@router.post("/assign-teacher")
-async def assign_lesson_to_teacher(lesson: AddLessonModel, user: str = Depends(get_current_user)):
-    pass
+@router.put("/assign-teacher")
+async def assign_lesson_to_teacher(lesson_code: str, teacher_id: int, user: str = Depends(get_current_user)):
+    try:
+        temp = assign_teacher_controller(lesson_code, teacher_id)
+        if temp:
+            return JSONResponse(
+                status_code=200,
+                content={
+                    "message": "Assignment done succesfully"
+                }
+            )
+        return JSONResponse(
+            status_code=500,
+            content={"message": "Lesson did not assign to teacher"},
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"message": f"An error occurred. Error details: {str(e)}"},
+        )
