@@ -7,6 +7,12 @@ session = Session(bind=engine)
 def get_lesson_by_code(lesson_code):
     return session.query(Lesson).filter(lesson_code == Lesson.lesson_code).first()
 
+def get_lessons():
+    return session.query(Lesson).all()
+
+def get_lesson_by_id(lesson_id):
+    return session.query(Lesson).filter(Lesson.id == lesson_id).first()
+
 def update_notes(student_id, lesson_id, ara_sinav, final, diger_sinav):
     
     temp = update(StudentLesson).where(StudentLesson.student_id == student_id and StudentLesson.lesson_id == lesson_id).values(ara_sinav=ara_sinav, final=final, diger_sinav=diger_sinav)

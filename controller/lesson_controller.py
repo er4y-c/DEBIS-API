@@ -1,7 +1,7 @@
 from crud.user import get_student_by_no
 from crud.lesson import get_lesson_by_code, update_notes
 from db.database import Session, engine
-from models.models import StudentLesson
+from models.models import StudentLesson, Lesson
 
 session = Session(bind=engine)
 

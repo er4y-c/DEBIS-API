@@ -1,19 +1,52 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from controller.auth_controller import get_current_user
 from schemas.lesson_schema import AddLessonModel, AddStudentLessonModel, AddNoteModel
 from models.models import Lesson, Teacher
 from db.database import Session, engine
-from crud.lesson import get_lesson_by_code
+from crud.lesson import get_lesson_by_code, get_lesson_by_id
 from controller.lesson_controller import create_id_list, assign_lesson_controller, add_notes_controller
 
 router = APIRouter()
 session = Session(bind=engine)
 
 @router.get("/")
-async def hello(user: str = Depends(get_current_user)):
-    return {"message":"hello world"}
-
+async def get_lessons(user: str = Depends(get_current_user)):
+    try:
+        lessons = get_lessons()
+        return JSONResponse(
+            status_code=200,
+            content={
+                "course_list": jsonable_encoder(lessons)
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "message": f"An error occurred. Error details: {str(e)}"
+            }
+        )
+    
+@router.get("/{lesson_id}")
+async def get_lesson(lesson_id: int, user: str = Depends(get_current_user)):
+    try:
+        lesson = get_lesson_by_id(lesson_id)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "course_detail": jsonable_encoder(lesson)
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "message": f"An error occurred. Error details: {str(e)}"
+            }
+        )
+    
 @router.post("/create")
 async def create_lesson(lesson: AddLessonModel, user: str = Depends(get_current_user)):
     exist_lesson = session.query(Lesson).filter(Lesson.lesson_code==lesson.lesson_code or Lesson.lesson_name==lesson.lesson_name).first()
