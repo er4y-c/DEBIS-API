@@ -10,7 +10,7 @@ session = Session(bind=engine)
 
 @router.get("/me")
 async def hello(user = Depends(get_current_user)):
-    return {"message":user}
+    return user
 
 @router.post("/login")
 async def login(user: LoginModel):

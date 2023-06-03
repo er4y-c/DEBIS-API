@@ -5,7 +5,7 @@ from fastapi.openapi.models import OAuthFlows
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import RedirectResponse
-
+from fastapi.middleware.cors import CORSMiddleware
 from routes.auth_routes import router as auth_routes
 from routes.teacher_routes import router as teacher_routes
 from routes.student_routes import router as student_routes
@@ -14,7 +14,13 @@ from routes.lesson_routes import router as lesson_routes
 app = FastAPI()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
