@@ -7,7 +7,7 @@ from schemas.auth_schema import SignUpStudentModel, SignUpTeacherModel
 from schemas.lesson_schema import AddLessonModel, AddStudentLessonModel, AddNoteModel
 from models.models import Lesson, Teacher, TeacherLesson
 from db.database import Session, engine
-from crud.lesson import get_lesson_by_code, get_lesson_by_id, add_lesson, add_teacher_lesson, get_student_all_lesson
+from crud.lesson import get_lesson_by_code, get_lesson_by_id, add_lesson, add_teacher_lesson, get_student_all_lesson, get_current_semester
 from controller.lesson_controller import create_id_list, assign_lesson_controller, add_notes_controller, assign_teacher_controller
 
 router = APIRouter()
@@ -53,6 +53,7 @@ async def get_lesson(lesson_id: int, user = Depends(get_current_user)):
 async def get_student_lessons(student_id: int, user = Depends(get_current_user)):
     try:
         lessons = get_student_all_lesson(student_id)
+            
         return JSONResponse(
             status_code=200,
             content={
@@ -66,7 +67,35 @@ async def get_student_lessons(student_id: int, user = Depends(get_current_user))
                 "message": f"An error occurred. Error details: {str(e)}"
             }
         )
+
+@router.get("/student_semester_lesson/{student_id}")
+async def get_student_lessons(student_id: int, year: int, semester: int, user = Depends(get_current_user)):
     
+    try:
+        lesson_codes = []
+        lesson_names = []
+        lessons = get_current_semester(student_id, year, semester)
+        for lesson in lessons:
+            temp = get_lesson_by_id(lesson.lesson_id)
+            lesson_codes.append(temp.lesson_code)
+            lesson_names.append(temp.lesson_name)
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "course_list": jsonable_encoder(lessons),
+                "course_codes": jsonable_encoder(lesson_codes),
+                "course_names": jsonable_encoder(lesson_names)
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "message": f"An error occurred. Error details: {str(e)}"
+            }
+        )
+
 @router.post("/create")
 async def create_lesson(lesson: AddLessonModel, user = Depends(get_current_user)):
     exist_lesson = session.query(Lesson).filter(Lesson.lesson_code==lesson.lesson_code or Lesson.lesson_name==lesson.lesson_name).first()

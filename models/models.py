@@ -74,6 +74,8 @@ class StudentLesson(Base):
     ara_sinav = Column(Integer)
     final = Column(Integer)
     diger_sinav = Column(Integer)
+    years = Column(Integer)
+    semester_type = Column(Integer)
 
     def __repr__(self):
         return f"User lesson {self.id}"

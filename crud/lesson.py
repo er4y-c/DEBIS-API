@@ -37,3 +37,6 @@ def update_lessons_teacher(current_lesson, teacher_id):
 def get_student_all_lesson(student_id):
     lessons = session.query(StudentLesson).filter(StudentLesson.student_id == student_id).all()
     return lessons
+
+def get_current_semester(student_id, year, semester):
+    return session.query(StudentLesson).filter((StudentLesson.student_id == student_id) & (StudentLesson.years == year) & (StudentLesson.semester_type == semester)).all()
