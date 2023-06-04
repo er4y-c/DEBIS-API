@@ -1,6 +1,7 @@
 from db.database import Session, engine
 from models.models import Lesson, StudentLesson, TeacherLesson
-from sqlalchemy import update
+from sqlalchemy import update, select
+from sqlalchemy.sql import distinct
 
 session = Session(bind=engine)
 
@@ -40,3 +41,14 @@ def get_student_all_lesson(student_id):
 
 def get_current_semester(student_id, year, semester):
     return session.query(StudentLesson).filter((StudentLesson.student_id == student_id) & (StudentLesson.years == year) & (StudentLesson.semester_type == semester)).all()
+
+def get_options(student_id):
+    query = select(distinct(StudentLesson.years)).where(StudentLesson.student_id == student_id)
+    result_year = session.execute(query)
+    query = select(distinct(StudentLesson.semester_type)).where(StudentLesson.student_id == student_id)
+    result_semester = session.execute(query)
+
+    years = [row[0] for row in result_year]
+    semesters = [row[0] for row in result_semester]
+
+    return years, semesters

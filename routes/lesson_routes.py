@@ -7,7 +7,7 @@ from schemas.auth_schema import SignUpStudentModel, SignUpTeacherModel
 from schemas.lesson_schema import AddLessonModel, AddStudentLessonModel, AddNoteModel
 from models.models import Lesson, Teacher, TeacherLesson
 from db.database import Session, engine
-from crud.lesson import get_lesson_by_code, get_lesson_by_id, add_lesson, add_teacher_lesson, get_student_all_lesson, get_current_semester
+from crud.lesson import get_lesson_by_code, get_lesson_by_id, add_lesson, add_teacher_lesson, get_student_all_lesson, get_current_semester, get_options
 from controller.lesson_controller import create_id_list, assign_lesson_controller, add_notes_controller, assign_teacher_controller
 
 router = APIRouter()
@@ -206,4 +206,22 @@ async def assign_lesson_to_teacher(lesson_code: str, teacher_id: int, user = Dep
         return JSONResponse(
             status_code=500,
             content={"message": f"An error occurred. Error details: {str(e)}"},
+        )
+
+@router.get("/options/{student_id}")
+async def get_option(student_id: int, user = Depends(get_current_user)):
+    try: 
+        years, semesters = get_options(student_id)
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "years": jsonable_encoder(years),
+                "semesters": jsonable_encoder(semesters)
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"message": f"An error occurred. Error details: {str(e)}"}
         )
