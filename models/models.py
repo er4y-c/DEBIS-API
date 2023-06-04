@@ -75,7 +75,7 @@ class StudentLesson(Base):
     final = Column(Integer)
     diger_sinav = Column(Integer)
     years = Column(Integer)
-    semester_type = Column(Integer)
+    semester_type = Column(String(20))
 
     def __repr__(self):
         return f"User lesson {self.id}"

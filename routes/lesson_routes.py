@@ -69,7 +69,7 @@ async def get_student_lessons(student_id: int, user = Depends(get_current_user))
         )
 
 @router.get("/student_semester_lesson/{student_id}")
-async def get_student_lessons(student_id: int, year: int, semester: int, user = Depends(get_current_user)):
+async def get_student_lessons(student_id: int, year: int, semester: str, user = Depends(get_current_user)):
     
     try:
         lesson_codes = []
