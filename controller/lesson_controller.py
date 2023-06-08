@@ -1,5 +1,5 @@
-from crud.user import get_student_by_no
-from crud.lesson import get_lesson_by_code, update_notes, update_lessons_teacher
+from crud.user import get_student_by_no, get_teacher_by_id
+from crud.lesson import get_lesson_by_code, update_notes, update_lessons_teacher, get_lesson_by_id
 from db.database import Session, engine
 from models.models import StudentLesson, TeacherLesson, Lesson
 
@@ -46,3 +46,16 @@ def assign_teacher_controller(lesson_code, teacher_id):
         return True
     except Exception as e:
         return None
+
+def lesson_data_controller(lesson_id):
+    lesson_data = get_lesson_by_id(lesson_id)
+    teacher_data = get_teacher_by_id(lesson_data.teacher_id)
+
+    return {
+    "id": lesson_data.id,
+    "teacher": teacher_data.full_name,
+    "lesson_department": lesson_data.lesson_department,
+    "lesson_name": lesson_data.lesson_name,
+    "lesson_code": lesson_data.lesson_code,
+    "lesson_credit": lesson_data.lesson_credit
+  }

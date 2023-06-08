@@ -7,8 +7,8 @@ from schemas.auth_schema import SignUpStudentModel, SignUpTeacherModel
 from schemas.lesson_schema import AddLessonModel, AddStudentLessonModel, AddNoteModel
 from models.models import Lesson, Teacher, TeacherLesson
 from db.database import Session, engine
-from crud.lesson import get_lesson_by_code, get_lesson_by_id, add_lesson, add_teacher_lesson, get_student_all_lesson, get_current_semester, get_options
-from controller.lesson_controller import create_id_list, assign_lesson_controller, add_notes_controller, assign_teacher_controller
+from crud.lesson import get_lesson_by_code, add_lesson, add_teacher_lesson, get_student_all_lesson, get_current_semester, get_options, get_lesson_by_id
+from controller.lesson_controller import create_id_list, assign_lesson_controller, add_notes_controller, assign_teacher_controller, lesson_data_controller
 
 router = APIRouter()
 session = Session(bind=engine)
@@ -34,7 +34,7 @@ async def get_lessons(user = Depends(get_current_user)):
 @router.get("/{lesson_id}")
 async def get_lesson(lesson_id: int, user = Depends(get_current_user)):
     try:
-        lesson = get_lesson_by_id(lesson_id)
+        lesson = lesson_data_controller(lesson_id)
         return JSONResponse(
             status_code=200,
             content={
