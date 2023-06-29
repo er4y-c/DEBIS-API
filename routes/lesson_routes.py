@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from typing import Union
 from controller.auth_controller import get_current_user
-from schemas.auth_schema import SignUpStudentModel, SignUpTeacherModel
 from schemas.lesson_schema import AddLessonModel, AddStudentLessonModel, AddNoteModel
 from models.models import Lesson, Teacher, TeacherLesson
 from db.database import Session, engine

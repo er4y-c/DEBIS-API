@@ -10,7 +10,7 @@ from routes.auth_routes import router as auth_routes
 from routes.teacher_routes import router as teacher_routes
 from routes.student_routes import router as student_routes
 from routes.lesson_routes import router as lesson_routes
-
+from routes.announcement_routes import router as announcement_routes
 app = FastAPI()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
@@ -75,3 +75,4 @@ app.include_router(router=auth_routes, prefix="/auth", tags=["auth"])
 app.include_router(router=teacher_routes, prefix="/teacher", tags=["teacher"])
 app.include_router(router=student_routes, prefix="/student", tags=["student"])
 app.include_router(router=lesson_routes, prefix="/lesson", tags=["lesson"])
+app.include_router(router=announcement_routes, prefix="/announcement", tags=["announcement"])
