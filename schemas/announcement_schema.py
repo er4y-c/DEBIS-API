@@ -2,6 +2,10 @@ from pydantic import BaseModel
 from typing import Optional
 
 class AnnouncementModel(BaseModel):
+    id: Optional[int]
+    lesson_code: str
+    title: str
+    content: str
 
     class Config:
         orm_mode: True
@@ -10,6 +14,5 @@ class AnnouncementModel(BaseModel):
                "lesson_code": "CS-101",
                "title": "Deneme",
                "content": "Deneme",
-               "date": "29-06-2023"
             }
         }

@@ -1,9 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from db.database import Session, engine
+from datetime import datetime
 from controller.auth_controller import get_current_user
-from crud.announcement import get_all_announcement
+from crud.announcement import get_all_announcement, add_announcement
+from schemas.announcement_schema import AnnouncementModel
+from models.models import Announcement
+from controller.lesson_controller import get_lesson_by_code
 
 router = APIRouter()
 session = Session(bind=engine)
@@ -28,5 +32,29 @@ def get_all_announce(user = Depends(get_current_user)):
         )
 
 @router.post("/create")
-def create_announcement(user = Depends(get_current_user)):
-    pass
+def create_announcement(announcement: AnnouncementModel, user = Depends(get_current_user)):
+    current_lesson = get_lesson_by_code(announcement.lesson_code)
+    current_date = datetime.now()
+    new_announce = Announcement(
+        lesson_id = current_lesson.id,
+        announcement_title = announcement.title,
+        announcement_content = announcement.content,
+        announcement_date = current_date
+    )
+    
+    try:
+        add_announcement(new_announce)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Announcement add successfully"
+            }
+        )
+    
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "message": f"An error occurred. Error details: {str(e)}"
+            }
+        )
