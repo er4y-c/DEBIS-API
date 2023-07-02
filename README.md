@@ -1,6 +1,6 @@
 # DEBIS-API
 ## Description
-Debis API is a part of Debis project. DEBIS project is a student management system for universities. This repository contains backend services and operations for the DEBIS project. I am adding new properties and developing this project every day. Stay tuned :)
+Debis API is a part of Debis project. DEBIS project is a student management system for universities. This repository contains backend services and operations for the DEBIS project. I am adding new properties and developing this project every day. I will try to keep this readme file as up to date as I can, but updates may be delayed. Stay tuned :)
 ## About Project
 I am student at Dokuz Eylul University Computer Science Department. My fundamental mission fix my university's student system's errors and bugs and improving new features. Different by other student management systems, I am goaling statistical features adding about teachers and students performance analysis to this system for combining data analysis, data visualization and web development. I will continue to develop the project for this purpose.
 ## Database
