@@ -51,5 +51,6 @@ uvicorn main:app --reload
 
 ## Contact
 I am open to all suggestions, so you can contact me at the following addresses.
-[![LinkedIn Logo](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/eray-aynaci/)
-[![Gmail Logo](https://i.imgur.com/LfXxQHq.jpeg)](mailto:erayaynaci1@gmail.com)
+<p>I am open to all suggestions, so you can contact me at the following addresses.</p>
+<img src="https://i.stack.imgur.com/gVE0j.png" alt="LinkedIn Logo" width="25px" height="25px"><a href="https://www.linkedin.com/in/eray-aynaci/">https://www.linkedin.com/in/eray-aynaci/</a>
+<img src="https://i.imgur.com/LfXxQHq.jpeg" alt="Gmail Logo" width="25px" height="25px"><a href="mailto:erayaynaci1@gmail.com">erayaynaci1@gmail.com</a>
