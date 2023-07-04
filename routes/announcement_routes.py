@@ -65,7 +65,8 @@ def create_announcement(announcement: AnnouncementModel, user = Depends(get_curr
         lesson_id = current_lesson.id,
         announcement_title = announcement.title,
         announcement_content = announcement.content,
-        announcement_date = current_date
+        announcement_date = current_date,
+        owner_id= user.id
     )
     
     try:

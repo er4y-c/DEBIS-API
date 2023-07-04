@@ -57,6 +57,7 @@ class Announcement(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     lesson_id = Column(Integer, ForeignKey("lessons.id"))
+    owner_id = Column(Integer)
     announcement_title = Column(Text)
     announcement_content = Column(Text)
     announcement_date = Column(DateTime)
