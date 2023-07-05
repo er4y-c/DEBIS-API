@@ -41,8 +41,6 @@ Create your local database for project
 ```bash
 python init_db
 ```
-
-You can use Alembic for database migration.
 Start the project on your local environment
 
 ```bash
